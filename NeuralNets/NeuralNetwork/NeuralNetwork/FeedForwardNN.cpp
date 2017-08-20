@@ -31,26 +31,37 @@ void FeedForwardNN::BackProp(){
     
 }
 
-void FeedForwardNN::TextProcessor(){
-    string line;
-    
-    //ifstream testfile("/Users/gauthamsuriya/Desktop/GauthamDev/AlgorithmLibG/20news-bydate/20news-bydate-train/talk.religion.misc/83476");
-    DIR *dirp = opendir("/Users/gauthamsuriya/Desktop/GauthamDev/AlgorithmLibG/20news-bydate/");
+void directoryProbe(string folder){
+    //cout << folder << endl;
+    DIR *dirp = opendir(folder.c_str());
     struct dirent * rePt;
+    //string fldtmp = folder;
     if(dirp){
         while((rePt = readdir(dirp)) != NULL){
-            if( strcmp(rePt->d_name, ".") != 0 && strcmp(rePt->d_name, "..") != 0 && strcmp(rePt -> d_name, ".DS_Store"))
+            if( strcmp(rePt->d_name, ".") != 0 && strcmp(rePt->d_name, "..") != 0 && strcmp(rePt -> d_name, ".DS_Store") !=0){
                 cout << rePt->d_name << "\n";
+                directoryProbe(folder+"/"+rePt->d_name);
+            }
         }
         closedir(dirp);
-    }
-    
-    /*if(testfile.is_open()){
-        while(getline(testfile, line)){
-            cout<< line << "\n" << endl;
-        }
-        testfile.close();
     }else{
-        cout << "unable to open file" << endl;
-    }*/
+        cout<< "no more folders found" << endl;
+        string line;
+        ifstream testfile(folder);
+        if(testfile.is_open()){
+            while(getline(testfile, line)){
+                cout<< line << "\n" << endl;
+            }
+            testfile.close();
+        }else{
+            cout << "unable to open file" << endl;
+        }
+    }
+}
+
+void FeedForwardNN::TextProcessor(){
+    string line = "/Users/gauthamsuriya/Desktop/GauthamDev/AlgorithmLibG/20news-bydate/20news-bydate-train";
+    const char * folder = line.c_str();
+    directoryProbe(folder);
+    
 }
