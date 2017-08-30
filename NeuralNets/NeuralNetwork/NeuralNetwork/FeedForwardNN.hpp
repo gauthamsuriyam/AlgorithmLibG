@@ -10,8 +10,11 @@
 #define FeedForwardNN_hpp
 
 #include <stdio.h>
+#include <string.h>
+#include <set>
 
 class FeedForwardNN{
+    std::set<std::string> Vocab;
 public:
     FeedForwardNN();
     void InitNetwork(); // Data processing and neural net formation
