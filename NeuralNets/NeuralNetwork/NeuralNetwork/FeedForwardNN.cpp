@@ -10,14 +10,26 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <cstring>
 #include <dirent.h>
+#include <Eigen/Dense>      // Needs to be installed separately. Can use other matrix tools.
 
 using namespace std;
+using Eigen::MatrixXd;
 
 FeedForwardNN::FeedForwardNN(){
     cout << "neural net initiated" << endl;
-    TextProcessor();
+    //TextProcessor();
+    cout << "sample eigen program" << endl;
+    MatrixXd m(2,2);
+    m(0,0) = 1;
+    m(1,0) = 2;
+    m(0,1) = 3;
+    m(1,1) = 4;
+    cout << m << endl;
+    cout << m.transpose() << endl;
+    
 }
 
 void FeedForwardNN::InitNetwork(){
@@ -40,7 +52,7 @@ void directoryProbe(string folder, set<string> * Vocab){
     //string fldtmp = folder;
     if(dirp){
         while((rePt = readdir(dirp)) != NULL){
-            if( strcmp(rePt->d_name, ".") != 0 && strcmp(rePt->d_name, "..") != 0 && strcmp(rePt -> d_name, ".DS_Store") !=0){
+            if( strcmp(rePt->d_name, ".") != 0 && strcmp(rePt->d_name, "..") != 0 && strcmp(rePt -> d_name, ".DS_Store") !=0){// for mac systems :/
                 //cout << rePt->d_name << "\n";
                 directoryProbe(folder+"/"+rePt->d_name , Vocab);
             }
@@ -83,7 +95,8 @@ void FilterWords(string &s){
     //cout<< s << endl;
     
     for (unsigned int i = 0; i < sizeof(filter); ++i) {
-        s.erase(remove(s.begin(), s.end(), filter[i]),s.end());
+        //s.erase(remove(s.begin(), s.end(), filter[i]),s.end());
+        replace(s.begin(),s.end(),filter[i],' ');
     }
     transform(s.begin(), s.end(), s.begin(), ::tolower);
     
@@ -113,6 +126,7 @@ void FeedForwardNN::TextProcessor(){
     }*/
         
     set<string> folderset;
+    string words;
     string line = "/Users/gauthamsuriya/Desktop/GauthamDev/AlgorithmLibG/20news-bydate/20news-bydate-train";
     const char * folder = line.c_str();
     char * pch;
@@ -124,41 +138,48 @@ void FeedForwardNN::TextProcessor(){
         if(testfile.is_open()){
             while(getline(testfile, line)){
                 FilterWords(line);
+                /*stringstream iss(line);
+                while(getline(iss,words,' ')){
+                    Vocab.insert(words);
+                }*/
                 //cout<< line << endl;
                 char * lch = new char[line.length()+1];
                 strcpy(lch, line.c_str());
-                pch = strtok(lch, filter);
-                while(pch!=NULL){
-                    cout << "word: "<< pch << endl;
+                pch = strtok(lch, " ");
+                while(pch!=NULL && (strpbrk(pch, "") == NULL)){
+                    //cout << "word: "<< pch << endl;
                     Vocab.insert(pch);
-                    pch = strtok (NULL, filter);
+                    pch = strtok (NULL, " ");
                 }
                 delete [] lch;
             }
-            testfile.close();
         }else{
             cout << "unable to open file" << endl;
         }
+        testfile.close();
     }
-    auto it = Vocab.find("\nfido");
+    //auto it = Vocab.find(" ");
     
-    cout<< "vocab list: "<<endl;
-    if(it!=Vocab.end()){
+   // const char * p = it->c_str();
+    
+    //cout << p << endl;
+    //cout<< "vocab list: "<<endl;
+   /* if(it!=Vocab.end()){
         cout << "found: "<<*it << endl;
     }else{
         cout<< "end of list reached" << endl;
-    }
-    
-    /*for(auto itv = Vocab.begin(); itv!= Vocab.end(); itv++){
-        cout<<"vocab: "<<*itv<<endl;
-        c = itv->c_str();
-        char * ph;
-        ph = strpbrk(c, "\0");mikael
-        while(ph!=NULL){
-            cout << "ph value found" << endl;
-            printf("%c",*ph);
-            ph = strpbrk(ph+1, filter);
-        }
     }*/
+    auto ite1 = Vocab.find("a");
+    auto ite2 = Vocab.find("");    // bunch of empty value i have no idea that came from the test set
+    Vocab.erase(Vocab.begin(),ite1);
+    Vocab.erase(ite2,Vocab.end());
     
+    
+    for(auto itv = Vocab.begin(); itv!= Vocab.end(); itv++){
+        //const char * p = itv->c_str();
+        cout<<"vocab: "<<*itv<<endl;
+        //if(strpbrk(p, "") != NULL){
+          //  cout << "found empty "<< endl;
+        //}
+    }
 }

@@ -226,6 +226,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 7H455QAS99;
+				HEADER_SEARCH_PATHS = /usr/local/include/eigen3/;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-I",
+					/usr/local/include/eigen3/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -234,6 +240,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 7H455QAS99;
+				HEADER_SEARCH_PATHS = /usr/local/include/eigen3/;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-I",
+					/usr/local/include/eigen3/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -257,6 +269,7 @@
 				28389FCE1F3278490069C93A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
