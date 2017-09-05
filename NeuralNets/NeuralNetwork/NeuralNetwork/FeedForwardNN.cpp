@@ -12,15 +12,18 @@
 #include <string>
 #include <sstream>
 #include <cstring>
+#include <queue>
 #include <dirent.h>
 #include <Eigen/Dense>      // Needs to be installed separately. Can use other matrix tools.
 
 using namespace std;
 using Eigen::MatrixXd;
 
-FeedForwardNN::FeedForwardNN(){
-    cout << "neural net initiated" << endl;
-    //TextProcessor();
+unordered_map<string, string> InputSet;
+
+FeedForwardNN::FeedForwardNN(int layer[]){
+    cout << "neural net initiated | layers: "<< layer[0] << endl;
+    TextProcessor();
     cout << "sample eigen program" << endl;
     MatrixXd m(2,2);
     m(0,0) = 1;
@@ -33,6 +36,12 @@ FeedForwardNN::FeedForwardNN(){
 }
 
 void FeedForwardNN::InitNetwork(){
+    // inputs-> Vocab
+    // init weight -> size of Vocab
+    // inner network weight -> specified // single hidden layer for build 1
+    // Bias -> hidden layer size
+    // OutputBias -> op size -> category.folder size
+    // a = sum(wx) + b
     
 }
 
@@ -127,17 +136,40 @@ void FeedForwardNN::TextProcessor(){
         
     set<string> folderset;
     string words;
-    string line = "/Users/gauthamsuriya/Desktop/GauthamDev/AlgorithmLibG/20news-bydate/20news-bydate-train";
-    const char * folder = line.c_str();
+    string className;
+    string line;
+    queue<string> tempCName;
+    string trainPath = "/Users/gauthamsuriya/Desktop/GauthamDev/AlgorithmLibG/20news-bydate/20news-bydate-train";
+    size_t lsize = trainPath.size();
+    const char * folder = trainPath.c_str();
     char * pch;
     directoryProbe(folder, &folderset);
     
     for(auto it = folderset.begin(); it!= folderset.end(); it++){
         //cout<< "from vocab begining: "<<*it<<endl;
+        if(!tempCName.empty()){
+            tempCName.pop();
+        }
         ifstream testfile(*it);
+        
+        //const char * fname = it->c_str();
+        words = *it;
+        cout << words << endl;
+        //remove(words.begin(),words.end(),"/");
+        words.erase(words.begin(), words.begin()+lsize);
+        cout << words << endl;
+        stringstream iss(words);
+        while(getline(iss, className, '/')){
+            tempCName.push(className);
+            cout<< className << endl;
+        }
+        tempCName.pop();
+        cout<< "size of tempCname: " << tempCName.size() << endl;
+        words= "";
         if(testfile.is_open()){
             while(getline(testfile, line)){
                 FilterWords(line);
+                words += line;
                 /*stringstream iss(line);
                 while(getline(iss,words,' ')){
                     Vocab.insert(words);
@@ -153,6 +185,12 @@ void FeedForwardNN::TextProcessor(){
                 }
                 delete [] lch;
             }
+            //pair<string,string> inputpair(tempCName.front(),words);
+            cout << tempCName.front() << endl;
+            cout << words << endl;
+            //InputSet.insert({"bla","bla"});
+            //cout << tempCName.front() << endl;
+            tempCName.pop();
         }else{
             cout << "unable to open file" << endl;
         }

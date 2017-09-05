@@ -10,8 +10,8 @@
 #include "FeedForwardNN.hpp"
 
 int main() {
-    
-    FeedForwardNN();
+    int layer[] = {30};
+    FeedForwardNN foo(layer);
     
     return 0;
 }
