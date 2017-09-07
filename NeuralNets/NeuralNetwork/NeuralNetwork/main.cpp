@@ -11,7 +11,8 @@
 
 int main() {
     int layer[] = {30};
-    FeedForwardNN foo(layer);
+    
+    FeedForwardNN foo(layer, sizeof(layer)/sizeof(layer[0]));
     
     return 0;
 }
