@@ -9,7 +9,7 @@
 #ifndef FeedForwardNN_hpp
 #define FeedForwardNN_hpp
 
-#include <stdio.h>
+//#include <stdio.h>
 #include <string.h>
 #include <Eigen/Dense>
 #include <map>
@@ -42,7 +42,7 @@ class FeedForwardNN{
 public:
     FeedForwardNN(int hlayer[], int sz, int learningRate, int batchsize, string dsPath);
     void InitNetwork(int hlayer[]); // Data processing and neural net formation
-    void FeedFwd(); // Data propagation through the network
+    void FeedFwd(string cName); // Data propagation through the network
     void BackProp();// Back propogation to find the weights and bias of the network
     void TextProcessor(string dsPath);
     void BatchUpdate();
